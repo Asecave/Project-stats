@@ -13,15 +13,11 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 public class ProjectStats {
 
-	/*
-	 * Idea of use: run LineCounter.jar in cmd choose a directory console will show
-	 * you the number of lines
-	 */
-
 	int lines = 0;
 	int characters = 0;
 	int files = 0;
 	int directories = -1;
+	int words = 0;
 
 	public static void main(String[] args) {
 		new ProjectStats();
@@ -31,8 +27,7 @@ public class ProjectStats {
 
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-				| UnsupportedLookAndFeelException e) {
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
 			e.printStackTrace();
 		}
 
@@ -50,11 +45,12 @@ public class ProjectStats {
 
 		System.out.println("Scanning files...");
 		directory(new File(path));
-		
+
 		System.out.println("-----------------------------");
 		System.out.println(directories + " directories");
 		System.out.println(files + " files");
 		System.out.println(lines + " lines");
+		System.out.println(words + " words");
 		System.out.println(characters + " characters");
 		System.out.println("-----------------------------");
 	}
@@ -76,8 +72,12 @@ public class ProjectStats {
 					while ((line = reader.readLine()) != null) {
 						lines++;
 						characters += line.length();
+						for (String s : line.split("[ ().:;{}\"]")) {
+							if (s.length() > 1)
+								words++;
+						}
 					}
-					
+
 					reader.close();
 
 				} catch (FileNotFoundException e) {
